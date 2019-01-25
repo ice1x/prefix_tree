@@ -3,6 +3,7 @@ SQL-like query with prefix-tree:
 """
 from datetime import datetime
 
+
 GENDER = {
     True: 'Male',
     False: 'Female',
@@ -26,6 +27,8 @@ class Node(object):
 
 
 class Trie(Node):
+    _SIZE = 0
+
     def insert(self, word, data):
         node = self
         for char in word:
@@ -38,10 +41,13 @@ class Trie(Node):
                     break
 
             if not found_in_child:
+                self._SIZE += char.__sizeof__()
+                self._SIZE += [].__sizeof__()
                 new_node = Node(char, [])
                 new_node.level = node.level + 1
                 node.children.append(new_node)
                 node = new_node
+        self._SIZE += data.__sizeof__()
         node.data.append(data)
 
     def _find_last_node_by_prefix(self, prefix):
@@ -76,49 +82,78 @@ class Trie(Node):
     def get_by_prefix_sort_by(self, prefix, key_):
         return self._sort(self._get_data_by_node(self._find_last_node_by_prefix(prefix)), key_)
 
+    def get_by_prefix_and_query(self, prefix, query):
+        tmp_result = self.get_by_prefix(prefix)
+        tmp_query = [(k, v) for k, v in query.items()]
+        result = []
+        for i in tmp_result:
+            for j in tmp_query:
+                if j not in i.items():
+                    break
+            else:
+                result.append(i)
+        return result
+
+    def get_by_name_and_query(self, prefix, query):
+        tmp_result = self._find_last_node_by_prefix(prefix).data
+        tmp_query = [(k, v) for k, v in query.items()]
+        for i in tmp_result:
+            for j in tmp_query:
+                if j not in i.items():
+                    break
+            else:
+                return i
+
+    def __len__(self):
+        return self._SIZE
+
 
 if __name__ == "__main__":
     trie = Trie('%%', [])
+
     for person in [
-        {
-            'name': 'иван',
-            'age': 31,
-            'gender': True,
-            'type': True
-        },
-        {
-            'name': 'ирина',
-            'age': 23,
-            'gender': False,
-            'type': True
-        },
-        {
-            'name': 'ио',
-            'age': 3,
-            'gender': True,
-            'type': True
-        },
-        {
-            'name': 'иванович',
-            'age': 51,
-            'gender': True,
-            'type': None
-        }
-
-    ]:
-        trie.insert(
-            person['name'],
             {
-                'age': person['age'],
-                'gender': person['gender'],
-                'type': person['type']}
-        )
+                'name': 'иван',
+                'age': 31,
+                'gender': True,
+                'type': True
+            },
+            {
+                'name': 'ирина',
+                'age': 23,
+                'gender': False,
+                'type': True
+            },
+            {
+                'name': 'ио',
+                'age': 3,
+                'gender': True,
+                'type': True
+            },
+            {
+                'name': 'иванович',
+                'age': 51,
+                'gender': True,
+                'type': None
+            }
 
-s = datetime.now()
-# res = trie.get_by_prefix('иван')
-res = trie.get_by_prefix_sort_by('и', 'age')
-time_ = datetime.now() - s
-for i in res:
-    print(i)
-print(len(res))
-print(time_)
+        ]:
+            trie.insert(
+                person['name'],
+                {
+                    'name': person['name'],
+                    'age': person['age'],
+                    'gender': person['gender'],
+                    'type': person['type']}
+            )
+
+    s = datetime.now()
+    res = trie.get_by_prefix('иван')
+    res = trie.get_by_prefix_sort_by('ив', 'age')
+    time_ = datetime.now() - s
+    for i in res:
+        print(i)
+    print(len(res))
+    print(time_)
+    print(trie.get_by_prefix_and_query("и", {"type": True, "gender": False}))
+    print(len(trie))
