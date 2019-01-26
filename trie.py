@@ -26,7 +26,7 @@ class Node(object):
         self.char = char
         self.level = 0
         self.data = data
-        self.children = []
+        self.children = {}
         self._SIZE = self.char.__sizeof__() + self.data.__sizeof__() + self.children.__sizeof__()
 
 
@@ -45,9 +45,9 @@ class Trie(Node):
         for char in word:
             found_in_child = False
 
-            for child in node.children:
-                if child.char == char:
-                    node = child
+            for key, value in node.children.items():
+                if key == char:
+                    node = value
                     found_in_child = True
                     break
 
@@ -56,7 +56,7 @@ class Trie(Node):
                 self._SIZE += [].__sizeof__()
                 new_node = Node(char, [])
                 new_node.level = node.level + 1
-                node.children.append(new_node)
+                node.children.update({char: new_node})
                 self._SIZE += new_node.__sizeof__()
                 node = new_node
         self._SIZE += data.__sizeof__()
@@ -74,10 +74,10 @@ class Trie(Node):
             return
 
         for char in prefix:
-            for child in node.children:
-                if char in child.char:
-                    node = child
-                    break
+            if node.children.get(char):
+                node = node.children.get(char)
+            else:
+                break
         return node
 
     def _get_data_by_node(self, node):
@@ -89,9 +89,9 @@ class Trie(Node):
             result(list): - contain list of data(dict) inside
         """
         def _get_data_by_child(parent, result):
-            for child in range(len(parent.children)):
-                result += parent.children[child].data
-                result = _get_data_by_child(parent.children[child], result)
+            for key, value in parent.children.items():
+                result += value.data
+                result = _get_data_by_child(parent.children[key], result)
             return result
 
         return _get_data_by_child(node, node.data)
