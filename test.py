@@ -80,7 +80,7 @@ class TestSmallTrieMethods(unittest.TestCase):
         print(datetime.datetime.now())
         self.assertEqual(res1, res2)
 
-    def test_get_by_prefix_sort_by(self):
+    def test_get_by_prefix_sort_desc_by(self):
         """
         Regression
         """
@@ -99,8 +99,16 @@ class TestSmallTrieMethods(unittest.TestCase):
         print(res)
         print(datetime.datetime.now())
         self.assertEqual(len(res), len(TEST_DATA_SMALL))
-        # print(len(res))
-        # print(self.trie.get_by_prefix_and_query("и", {"type": True, "gender": False}))
+
+    def test_get_by_prefix_and_query(self):
+        """
+        Regression
+        """
+        res = self.trie.get_by_prefix_and_query("и", {"type": True, "gender": False})
+        print("test_get_by_prefix_and_query")
+        print(res)
+        print(datetime.datetime.now())
+        self.assertEqual(res, [IRINA_23_FT])
 
 
 if __name__ == '__main__':
