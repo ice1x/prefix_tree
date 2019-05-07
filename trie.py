@@ -125,7 +125,7 @@ class Trie(Node, metaclass=Singleton):
 
         return _get_data_by_child(node, node.data)
 
-    def _sort(self, source, key_):
+    def _sort_desc(self, source, key_):
         """
         Descending sorting by key_
         Args:
@@ -133,7 +133,6 @@ class Trie(Node, metaclass=Singleton):
             key_(str): key to sort by
         Return:
             data_sorted(list): list sorted by key_
-        #TODO: Decorator?
         """
         data_sorted = sorted(source, key=lambda value: value[key_])
         data_sorted.reverse()
@@ -149,7 +148,7 @@ class Trie(Node, metaclass=Singleton):
         """
         return self._get_data_by_node(self._get_last_node_by_prefix(prefix))
 
-    def get_by_prefix_sort_by(self, prefix, key_):
+    def get_by_prefix_sort_desc_by(self, prefix, key_):
         """
         Find all data where word starts with prefix
         Args:
@@ -158,7 +157,7 @@ class Trie(Node, metaclass=Singleton):
         Return:
             result(list): list of dict's
         """
-        return self._sort(self._get_data_by_node(self._get_last_node_by_prefix(prefix)), key_)
+        return self. _sort_desc(self._get_data_by_node(self._get_last_node_by_prefix(prefix)), key_)
 
     def get_by_prefix_and_query(self, prefix, query):
         """

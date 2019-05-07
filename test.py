@@ -56,7 +56,14 @@ class TestSmallTrieMethods(unittest.TestCase):
         res1 = self.trie.get_by_prefix('иван')[:]
         res2 = self.trie.get_by_prefix('иван')[:]
         self.assertEqual(res1, res2)
-        # res = self.trie.get_by_prefix_sort_by('ив', 'age')
+
+    def test_get_by_prefix_sort_by(self):
+        """
+        Regression
+        """
+        res = self.trie.get_by_prefix_sort_desc_by('ив', 'age')
+        self.assertEqual(res, [IVANOVICH_51_TN, IVAN_31_TT])
+
         # print(len(res))
         # print(self.trie.get_by_prefix_and_query("и", {"type": True, "gender": False}))
 
