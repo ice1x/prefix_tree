@@ -2,19 +2,6 @@
 Prefix Trie
 """
 
-GENDER = {
-    True: 'Male',
-    False: 'Female',
-    None: 'Unknown'
-}
-TYPE = {
-    True: 'name',
-    False: 'patronymic',
-    None: 'surname'
-}
-TYPE_REVERSED = {v: k for k, v in TYPE.items()}
-GENDER_REVERSED = {v: k for k, v in GENDER.items()}
-
 
 class Singleton(type):
     _instances = {}
