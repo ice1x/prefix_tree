@@ -1,8 +1,6 @@
 """
 SQL-like query with prefix-tree:
 """
-from datetime import datetime
-
 
 GENDER = {
     True: 'Male',
@@ -18,6 +16,15 @@ TYPE_REVERSED = {v: k for k, v in TYPE.items()}
 GENDER_REVERSED = {v: k for k, v in GENDER.items()}
 
 
+class Singleton(type):
+    _instances = {}
+    
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
 class Node(object):
     """
     Class describes the data structure of node
@@ -26,14 +33,27 @@ class Node(object):
         self.char = char
         self.level = 0
         self.data = data
-        self.children = []
+        self.children = {}
         self._SIZE = self.char.__sizeof__() + self.data.__sizeof__() + self.children.__sizeof__()
 
 
-class Trie(Node):
+class Trie(Node, metaclass=Singleton):
     """
     Class describes the tree hierarchy and routines to set/get data
     """
+
+    def __init__(
+            self,
+            char='%%',
+            data=[]
+    ):
+        self.char = char
+        self.data = data
+        super().__init__(
+            self.char,
+            self.data
+        )
+
     def insert(self, word, data):
         """
         Inserts word with attached data in the new or existent node
@@ -45,9 +65,9 @@ class Trie(Node):
         for char in word:
             found_in_child = False
 
-            for child in node.children:
-                if child.char == char:
-                    node = child
+            for key, value in node.children.items():
+                if key == char:
+                    node = value
                     found_in_child = True
                     break
 
@@ -56,13 +76,13 @@ class Trie(Node):
                 self._SIZE += [].__sizeof__()
                 new_node = Node(char, [])
                 new_node.level = node.level + 1
-                node.children.append(new_node)
+                node.children.update({char: new_node})
                 self._SIZE += new_node.__sizeof__()
                 node = new_node
         self._SIZE += data.__sizeof__()
         node.data.append(data)
 
-    def _find_last_node_by_prefix(self, prefix):
+    def _get_last_node_by_prefix(self, prefix):
         """
         Args:
             prefix(str): - word/name prefix to search node where last symbol of word/name appears
@@ -74,10 +94,10 @@ class Trie(Node):
             return
 
         for char in prefix:
-            for child in node.children:
-                if char in child.char:
-                    node = child
-                    break
+            if node.children.get(char):
+                node = node.children.get(char)
+            else:
+                break
         return node
 
     def _get_data_by_node(self, node):
@@ -89,10 +109,19 @@ class Trie(Node):
             result(list): - contain list of data(dict) inside
         """
         def _get_data_by_child(parent, result):
-            for child in range(len(parent.children)):
-                result += parent.children[child].data
-                result = _get_data_by_child(parent.children[child], result)
-            return result
+            """
+            Iterator
+            Args:
+                parent:
+                result:
+            Returns:
+                 (node.data)
+            """
+            _result = result[:]
+            for key, value in parent.children.items():
+                _result += value.data
+                _result = _get_data_by_child(parent.children[key], _result)
+            return _result
 
         return _get_data_by_child(node, node.data)
 
@@ -118,7 +147,7 @@ class Trie(Node):
         Return:
             (list): list of dict's
         """
-        return self._get_data_by_node(self._find_last_node_by_prefix(prefix))
+        return self._get_data_by_node(self._get_last_node_by_prefix(prefix))
 
     def get_by_prefix_sort_by(self, prefix, key_):
         """
@@ -129,7 +158,7 @@ class Trie(Node):
         Return:
             result(list): list of dict's
         """
-        return self._sort(self._get_data_by_node(self._find_last_node_by_prefix(prefix)), key_)
+        return self._sort(self._get_data_by_node(self._get_last_node_by_prefix(prefix)), key_)
 
     def get_by_prefix_and_query(self, prefix, query):
         """
@@ -161,7 +190,7 @@ class Trie(Node):
         Return:
             result(dict):
         """
-        tmp_result = self._find_last_node_by_prefix(word).data
+        tmp_result = self._get_last_node_by_prefix(word).data
         tmp_query = [(k, v) for k, v in query.items()]
         for i in tmp_result:
             for j in tmp_query:
@@ -172,54 +201,3 @@ class Trie(Node):
 
     def __len__(self):
         return self._SIZE
-
-
-if __name__ == "__main__":
-    trie = Trie('%%', [])
-
-    for person in [
-            {
-                'name': 'иван',
-                'age': 31,
-                'gender': True,
-                'type': True
-            },
-            {
-                'name': 'ирина',
-                'age': 23,
-                'gender': False,
-                'type': True
-            },
-            {
-                'name': 'ио',
-                'age': 3,
-                'gender': True,
-                'type': True
-            },
-            {
-                'name': 'иванович',
-                'age': 51,
-                'gender': True,
-                'type': None
-            }
-
-        ]:
-            trie.insert(
-                person['name'],
-                {
-                    'name': person['name'],
-                    'age': person['age'],
-                    'gender': person['gender'],
-                    'type': person['type']}
-            )
-
-    s = datetime.now()
-    res = trie.get_by_prefix('иван')
-    res = trie.get_by_prefix_sort_by('ив', 'age')
-    time_ = datetime.now() - s
-    for i in res:
-        print(i)
-    print(len(res))
-    print(time_)
-    print(trie.get_by_prefix_and_query("и", {"type": True, "gender": False}))
-    print(len(trie))
