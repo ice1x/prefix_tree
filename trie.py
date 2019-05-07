@@ -117,10 +117,11 @@ class Trie(Node, metaclass=Singleton):
             Returns:
                  (node.data)
             """
+            _result = result[:]
             for key, value in parent.children.items():
-                result += value.data
-                result = _get_data_by_child(parent.children[key], result)
-            return result
+                _result += value.data
+                _result = _get_data_by_child(parent.children[key], _result)
+            return _result
 
         return _get_data_by_child(node, node.data)
 
