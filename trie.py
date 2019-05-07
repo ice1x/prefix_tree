@@ -1,5 +1,5 @@
 """
-SQL-like query with prefix-tree:
+Prefix Trie
 """
 
 GENDER = {
