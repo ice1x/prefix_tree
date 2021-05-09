@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="prefix_tree",
-    version="0.0.2",
+    version="0.0.3",
     author="ice1x",
     author_email="ice2600x@gmale.com",
     description="A Python Prefix Tree - in memory data base with access by prefix",
