@@ -3,18 +3,6 @@ import unittest
 from trie import Trie
 
 
-GENDER = {
-    True: 'Male',
-    False: 'Female',
-    None: 'Unknown'
-}
-TYPE = {
-    True: 'name',
-    False: 'patronymic',
-    None: 'surname'
-}
-TYPE_REVERSED = {v: k for k, v in TYPE.items()}
-GENDER_REVERSED = {v: k for k, v in GENDER.items()}
 IVAN_31_TT = {
         'name': 'иван',
         'age': 31,
