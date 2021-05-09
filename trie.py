@@ -3,9 +3,23 @@ Prefix Trie
 """
 
 
+def sort_desc(source: list, key_: str) -> list:
+    """
+    Descending sorting by key_
+    Args:
+        source(list): list of dict's should contain the key: key_
+        key_(str): key to sort by, value should be integer
+    Return:
+        data_sorted(list): list sorted by key_
+    """
+    data_sorted = sorted(source, key=lambda value: int(value[key_]))
+    data_sorted.reverse()
+    return data_sorted
+
+
 class Singleton(type):
     _instances = {}
-    
+
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
@@ -16,12 +30,11 @@ class Node(object):
     """
     Class describes the data structure of node
     """
-    def __init__(self, char, data):
+
+    def __init__(self, char: str, data: list):
         self.char = char
-        self.level = 0
         self.data = data
         self.children = {}
-        self._SIZE = self.char.__sizeof__() + self.data.__sizeof__() + self.children.__sizeof__()
 
 
 class Trie(Node, metaclass=Singleton):
@@ -29,19 +42,12 @@ class Trie(Node, metaclass=Singleton):
     Class describes the tree hierarchy and routines to set/get data
     """
 
-    def __init__(
-            self,
-            char='%%',
-            data=[]
-    ):
+    def __init__(self, char='%%', data=[]):
         self.char = char
         self.data = data
-        super().__init__(
-            self.char,
-            self.data
-        )
+        super().__init__(self.char, self.data)
 
-    def insert(self, word, data):
+    def insert(self, word: str, data: list):
         """
         Inserts word with attached data in the new or existent node
         Args:
@@ -59,22 +65,17 @@ class Trie(Node, metaclass=Singleton):
                     break
 
             if not found_in_child:
-                self._SIZE += char.__sizeof__()
-                self._SIZE += [].__sizeof__()
                 new_node = Node(char, [])
-                new_node.level = node.level + 1
                 node.children.update({char: new_node})
-                self._SIZE += new_node.__sizeof__()
                 node = new_node
-        self._SIZE += data.__sizeof__()
         node.data.append(data)
 
-    def _get_last_node_by_prefix(self, prefix):
+    def _get_last_node_by_prefix(self, prefix: str) -> Node:
         """
         Args:
             prefix(str): - word/name prefix to search node where last symbol of word/name appears
         Return:
-             node(Node)
+            node(Node)
         """
         node = self
         if not node.children:
@@ -87,66 +88,44 @@ class Trie(Node, metaclass=Singleton):
                 break
         return node
 
-    def _get_data_by_node(self, node):
+    def _get_data_by_child(self, parent: Node, result: list) -> list:
         """
-        Iterator runner
+        Iterator
         Args:
-            node(Node): - word/name prefix to search node where last symbol of word/name appears
-        Return:
-            result(list): - contain list of data(dict) inside
+            parent:
+            result:
+        Returns:
+             (node.data)
         """
-        def _get_data_by_child(parent, result):
-            """
-            Iterator
-            Args:
-                parent:
-                result:
-            Returns:
-                 (node.data)
-            """
-            _result = result[:]
-            for key, value in parent.children.items():
-                _result += value.data
-                _result = _get_data_by_child(parent.children[key], _result)
-            return _result
+        _result = result[:]
+        for key, value in parent.children.items():
+            _result += value.data
+            _result = self._get_data_by_child(parent.children[key], _result)
+        return _result
 
-        return _get_data_by_child(node, node.data)
-
-    def _sort_desc(self, source, key_):
+    def _get_by_prefix(self, prefix: str) -> list:
         """
-        Descending sorting by key_
-        Args:
-            source(list): list of dict's should contain the key: key_
-            key_(str): key to sort by
-        Return:
-            data_sorted(list): list sorted by key_
-        """
-        data_sorted = sorted(source, key=lambda value: value[key_])
-        data_sorted.reverse()
-        return data_sorted
-
-    def get_by_prefix(self, prefix):
-        """
-        Find all data where word starts with prefix
+        Get data where word starts with prefix
         Args:
             prefix(str): prefix to search
         Return:
             (list): list of dict's
         """
-        return self._get_data_by_node(self._get_last_node_by_prefix(prefix))
+        node = self._get_last_node_by_prefix(prefix)
+        return self._get_data_by_child(node, node.data)
 
-    def get_by_prefix_sort_desc_by(self, prefix, key_):
+    def get_by_prefix_sort_desc_by(self, prefix, key_) -> list:
         """
-        Find all data where word starts with prefix
+        Get sorted by key_ data where word starts with prefix
         Args:
             prefix(str): prefix to search
             key_(str): key to sort by (DESC)
         Return:
             result(list): list of dict's
         """
-        return self. _sort_desc(self._get_data_by_node(self._get_last_node_by_prefix(prefix)), key_)
+        return sort_desc(self._get_by_prefix(prefix), key_)
 
-    def get_by_prefix_and_query(self, prefix, query):
+    def get_by_prefix_and_query(self, prefix: str, query: dict) -> list:
         """
         Find all data where word starts with prefix and query pattern in data
         Args:
@@ -155,7 +134,7 @@ class Trie(Node, metaclass=Singleton):
         Return:
             result(list): list of dict's
         """
-        tmp_result = self.get_by_prefix(prefix)
+        tmp_result = self._get_by_prefix(prefix)
         tmp_query = [(k, v) for k, v in query.items()]
         result = []
         for i in tmp_result:
@@ -166,24 +145,20 @@ class Trie(Node, metaclass=Singleton):
                 result.append(i)
         return result
 
-    def get_by_word_and_query(self, word, query):
+    def get_by_word_and_query(self, word: str, query: dict) -> dict or None:
         """
         Find node containing the word and return one data(dict) which is matched with query pattern
-        #TODO There is a bug if a query pattern match with more than one data(dict) but for name's it shouldn't
+
         Args:
             word(str): word to search node
             query(dict): pattern to match
         Return:
-            result(dict):
+            (dict or None):
         """
-        tmp_result = self._get_last_node_by_prefix(word).data
         tmp_query = [(k, v) for k, v in query.items()]
-        for i in tmp_result:
+        for i in self._get_last_node_by_prefix(word).data:
             for j in tmp_query:
                 if j not in i.items():
                     break
             else:
                 return i
-
-    def __len__(self):
-        return self._SIZE
