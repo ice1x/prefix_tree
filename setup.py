@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="trie",
+    name="trie-ice1x",
     version="0.0.1",
     author="ice1x",
     author_email="ice2600x@gmale.com",
