@@ -1,9 +1,10 @@
 """
 Prefix Trie
 """
+from typing import List, Dict, Text
 
 
-def sort_desc(source: list, key_: str) -> list:
+def sort_descending(source: List, key_: Text) -> List:
     """
     Descending sorting by key_
     Args:
@@ -31,7 +32,7 @@ class Node(object):
     Class describes the data structure of node
     """
 
-    def __init__(self, char: str, data: list):
+    def __init__(self, char: str, data: List):
         self.char = char
         self.data = data
         self.children = {}
@@ -47,7 +48,7 @@ class Trie(Node, metaclass=Singleton):
         self.data = data
         super().__init__(self.char, self.data)
 
-    def insert(self, word: str, data: list):
+    def insert(self, word: str, data: List):
         """
         Inserts word with attached data in the new or existent node
         Args:
@@ -70,7 +71,7 @@ class Trie(Node, metaclass=Singleton):
                 node = new_node
         node.data.append(data)
 
-    def _get_last_node_by_prefix(self, prefix: str) -> Node:
+    def _get_last_node_by_prefix(self, prefix: Text) -> Node:
         """
         Args:
             prefix(str): - word/name prefix to search node where last symbol of word/name appears
@@ -88,7 +89,7 @@ class Trie(Node, metaclass=Singleton):
                 break
         return node
 
-    def _get_data_by_child(self, parent: Node, result: list) -> list:
+    def _get_data_by_child(self, parent: Node, result: List) -> List:
         """
         Iterator
         Args:
@@ -103,7 +104,7 @@ class Trie(Node, metaclass=Singleton):
             _result = self._get_data_by_child(parent.children[key], _result)
         return _result
 
-    def _get_by_prefix(self, prefix: str) -> list:
+    def _get_by_prefix(self, prefix: Text) -> List:
         """
         Get data where word starts with prefix
         Args:
@@ -114,7 +115,7 @@ class Trie(Node, metaclass=Singleton):
         node = self._get_last_node_by_prefix(prefix)
         return self._get_data_by_child(node, node.data)
 
-    def get_by_prefix_sort_desc_by(self, prefix, key_) -> list:
+    def get_by_prefix_sort_desc_by(self, prefix, key_) -> List:
         """
         Get sorted by key_ data where word starts with prefix
         Args:
@@ -123,9 +124,9 @@ class Trie(Node, metaclass=Singleton):
         Return:
             result(list): list of dict's
         """
-        return sort_desc(self._get_by_prefix(prefix), key_)
+        return sort_descending(self._get_by_prefix(prefix), key_)
 
-    def get_by_prefix_and_query(self, prefix: str, query: dict) -> list:
+    def get_by_prefix_and_query(self, prefix: Text, query: Dict) -> List:
         """
         Find all data where word starts with prefix and query pattern in data
         Args:
@@ -145,7 +146,7 @@ class Trie(Node, metaclass=Singleton):
                 result.append(i)
         return result
 
-    def get_by_word_and_query(self, word: str, query: dict) -> dict or None:
+    def get_by_word_and_query(self, word: Text, query: Dict) -> Dict or None:
         """
         Find node containing the word and return one data(dict) which is matched with query pattern
 
