@@ -72,8 +72,8 @@ class TestSmallTrieMethods(unittest.TestCase):
         """
         Regression
         """
-        res1 = self.trie.get_by_prefix('иван')[:]
-        res2 = self.trie.get_by_prefix('иван')[:]
+        res1 = self.trie._get_by_prefix('иван')[:]
+        res2 = self.trie._get_by_prefix('иван')[:]
         print("test_no_output_increment")
         print(res1)
         print(res2)
@@ -94,7 +94,7 @@ class TestSmallTrieMethods(unittest.TestCase):
         """
         Regression
         """
-        res = self.trie.get_by_prefix('%%')
+        res = self.trie._get_by_prefix('%%')
         print("test_len")
         print(res)
         print(datetime.datetime.now())
