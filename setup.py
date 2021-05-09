@@ -8,14 +8,14 @@ with open("README.md", "r") as fh:
 
 setup(
     name="prefix_tree",
-    version="0.0.3",
+    version="0.0.4",
     author="ice1x",
     author_email="ice2600x@gmale.com",
     description="A Python Prefix Tree - in memory data base with access by prefix",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://ice1x.github.io/Python-Prefix-Tree/",
-    packages=find_packages(),
+    packages=find_packages(where='src'),
     package_dir={'': 'src'},
     classifiers=[
         "Programming Language :: Python :: 3.9",
