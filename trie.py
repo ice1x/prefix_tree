@@ -4,20 +4,6 @@ Prefix Trie
 from typing import List, Dict, Text
 
 
-def sort_descending(source: List, key_: Text) -> List:
-    """
-    Descending sorting by key_
-    Args:
-        source(list): list of dict's should contain the key: key_
-        key_(str): key to sort by, value should be integer
-    Return:
-        data_sorted(list): list sorted by key_
-    """
-    data_sorted = sorted(source, key=lambda value: int(value[key_]))
-    data_sorted.reverse()
-    return data_sorted
-
-
 class Singleton(type):
     _instances = {}
 
@@ -124,7 +110,9 @@ class Trie(Node, metaclass=Singleton):
         Return:
             result(list): list of dict's
         """
-        return sort_descending(self._get_by_prefix(prefix), key_)
+        data_sorted = sorted(self._get_by_prefix(prefix), key=lambda value: int(value[key_]))
+        data_sorted.reverse()
+        return data_sorted
 
     def get_by_prefix_and_query(self, prefix: Text, query: Dict) -> List:
         """
