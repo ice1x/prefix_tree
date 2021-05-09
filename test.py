@@ -1,4 +1,3 @@
-import datetime
 import unittest
 
 from trie import Trie
@@ -48,12 +47,12 @@ TEST_DATA_SMALL = [
 ]
 
 
-class TestSmallTrieMethods(unittest.TestCase):
+class TestTrieMethods(unittest.TestCase):
     SETUP_DONE = False
 
     def setUp(self):
         self.trie = Trie()
-        if TestSmallTrieMethods.SETUP_DONE:
+        if TestTrieMethods.SETUP_DONE:
             return
         for person in TEST_DATA_SMALL:
             self.trie.insert(
@@ -65,7 +64,7 @@ class TestSmallTrieMethods(unittest.TestCase):
                     'type': person['type']
                 }
             )
-            TestSmallTrieMethods.SETUP_DONE = True
+            TestTrieMethods.SETUP_DONE = True
 
     def test_no_output_increment(self):
         """
