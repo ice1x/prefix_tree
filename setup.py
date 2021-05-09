@@ -11,7 +11,7 @@ setuptools.setup(
     description="A Python Prefix Tree - in memory data base with access by prefix",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pypa/trie",
+    url="https://github.com/ice1x/Python-Prefix-Tree",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3.9",
