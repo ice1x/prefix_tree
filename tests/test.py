@@ -1,6 +1,6 @@
 import unittest
 
-from trie import Trie
+from src.prefix_tree.trie import Trie
 
 
 IVAN_31_TT = {
