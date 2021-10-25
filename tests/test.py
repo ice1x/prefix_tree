@@ -38,12 +38,13 @@ TEST_DATA_SMALL = [
 class TestTrieMethods(unittest.TestCase):
     SETUP_DONE = False
 
-    def setUp(self):
-        self.trie = Trie()
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.trie = Trie()
         if TestTrieMethods.SETUP_DONE:
             return
         for person in TEST_DATA_SMALL:
-            self.trie.insert(
+            cls.trie.insert(
                 person['name'],
                 {
                     'name': person['name'],

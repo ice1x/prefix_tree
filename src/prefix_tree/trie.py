@@ -17,6 +17,7 @@ class Node(object):
     """
     Class describes the data structure of node
     """
+    __slots__ = ('char', 'data', 'children')
 
     def __init__(self, char: str, data: List):
         self.char = char
@@ -24,7 +25,7 @@ class Node(object):
         self.children = {}
 
 
-class Trie(Node, metaclass=Singleton):
+class Trie(Node):
     """
     Class describes the tree hierarchy and routines to set/get data
     """
