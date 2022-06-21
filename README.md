@@ -7,3 +7,6 @@ https://github.com/ice1x/autocomplete-full-name
 # Steps to build
 - python3 -m build
 - twine upload dist/*
+
+# Keys:
+Any word autocomplete, suggestions, word storage, word search based on prepared word list
