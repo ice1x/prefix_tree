@@ -1,3 +1,5 @@
+# pylint: disable=C0114
+
 import unittest
 
 from src.prefix_tree.trie import Trie
@@ -35,7 +37,7 @@ TEST_DATA_SMALL = [
 ]
 
 
-class TestTrieMethods(unittest.TestCase):
+class TestTrieMethods(unittest.TestCase):  # pylint: disable=C0115
     SETUP_DONE = False
 
     @classmethod
@@ -59,8 +61,8 @@ class TestTrieMethods(unittest.TestCase):
         """
         Regression
         """
-        res1 = self.trie._get_by_prefix('иван')[:]
-        res2 = self.trie._get_by_prefix('иван')[:]
+        res1 = self.trie._get_by_prefix('иван')[:]  # pylint: disable=W0212
+        res2 = self.trie._get_by_prefix('иван')[:]  # pylint: disable=W0212
         self.assertEqual(res1, res2)
 
     def test_get_by_prefix_sort_desc_by(self):
@@ -74,7 +76,7 @@ class TestTrieMethods(unittest.TestCase):
         """
         Regression
         """
-        res = self.trie._get_by_prefix('%%')
+        res = self.trie._get_by_prefix('%%')  # pylint: disable=W0212
         self.assertEqual(len(res), len(TEST_DATA_SMALL))
 
     def test_get_by_prefix_and_query(self):
@@ -87,4 +89,3 @@ class TestTrieMethods(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
