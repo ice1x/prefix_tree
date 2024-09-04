@@ -1,9 +1,11 @@
-from setuptools import setup, find_packages
+# pylint: disable=C0114
 import pathlib
+
+from setuptools import setup, find_packages  # pylint: disable=E0401
 
 here = pathlib.Path(__file__).parent.resolve()
 
-with open("README.md", "r") as fh:
+with open("README.md", "r") as fh:  # pylint: disable=W1514
     long_description = fh.read()
 
 setup(
