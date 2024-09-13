@@ -1,5 +1,6 @@
 # Python-Prefix-Tree
-Search by prefix for list of words which is stored like in-memory data base with key-value access
+- in memory key: value data base on pure Python
+- methods: insert {key: str, value: dict}, search by prefix, limit search result by specific dict values
 
 # Usage example
 https://github.com/ice1x/autocomplete-full-name
