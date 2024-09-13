@@ -101,7 +101,7 @@ class Trie(Node):
         Return:
             result(list): list of dict"s
         """
-        data_sorted = sorted(self._get_by_prefix(prefix), key=lambda value: int(value[key_]))
+        data_sorted = sorted(self._get_by_prefix(prefix), key=lambda value: value[key_])
         data_sorted.reverse()
         return data_sorted
 
