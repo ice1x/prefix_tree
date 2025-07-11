@@ -55,15 +55,15 @@ class Trie(Node):
         Return:
             node(Node)
         """
-        node = self
-        if not node.children:
-            return None
+        if prefix == self.char:
+            return self
 
+        node = self
         for char in prefix:
-            if node.children.get(char):
-                node = node.children.get(char)
+            if char in node.children:
+                node = node.children[char]
             else:
-                break
+                return None
         return node
 
     def _get_data_by_child(self, parent: Node, result: str) -> str:
@@ -90,6 +90,8 @@ class Trie(Node):
             (list): list of dict"s
         """
         node = self._get_last_node_by_prefix(prefix)
+        if node is None:
+            return []
         return self._get_data_by_child(node, node.data)
 
     def get_by_prefix_sort_desc_by(self, prefix: str, key_: str) -> list:
@@ -134,7 +136,10 @@ class Trie(Node):
         Return:
             (dict or None):
         """
-        for i in self._get_last_node_by_prefix(word).data:
+        node = self._get_last_node_by_prefix(word)
+        if node is None:
+            return None
+        for i in node.data:
             for j in query.items():
                 if j not in i.items():
                     break

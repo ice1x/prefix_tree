@@ -86,6 +86,16 @@ class TestTrieMethods(unittest.TestCase):  # pylint: disable=C0115
         res = self.trie.get_by_prefix_and_query("и", {"type": True, "gender": False})
         self.assertEqual(res, [IRINA_23_FT])
 
+    def test_get_by_prefix_not_found(self):
+        """Prefix not found should return empty list"""
+        res = self.trie._get_by_prefix('неизвестно')  # pylint: disable=W0212
+        self.assertEqual(res, [])
+
+    def test_get_by_word_and_query_not_found(self):
+        """Word not found should return None"""
+        res = self.trie.get_by_word_and_query('неизвестно', {"type": True})
+        self.assertIsNone(res)
+
 
 if __name__ == '__main__':
     unittest.main()
