@@ -9,7 +9,7 @@ with open(here / "README.md", encoding="utf-8") as fh:
 
 setup(
     name="prefix_tree",
-    version="0.0.8",
+    version="0.0.9",
     author="ice1x",
     author_email="ice2600x@gmale.com",
     description="A pure Python prefix tree (trie) for fast in-memory prefix search and filtering",
